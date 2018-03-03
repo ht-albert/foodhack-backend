@@ -4,3 +4,4 @@ foodhack/__pycache__/
 ingredients/migrations/
 ingredients/__pycache__/
 dish/migrations/
+**/node_modules

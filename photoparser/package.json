@@ -1,0 +1,18 @@
+{
+  "name": "photoparser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node image-searcher.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "image-search-google": "^1.0.7",
+    "request": "^2.83.0"
+  }
+}
