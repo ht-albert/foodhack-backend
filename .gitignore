@@ -1,2 +1,5 @@
 manage.py
 foodhack/__pycache__/
+.idea/
+ingredients/migrations/
+ingredients/__pycache__/
