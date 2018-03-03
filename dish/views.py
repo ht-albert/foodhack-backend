@@ -19,13 +19,20 @@ def get_list(requests):
     
     exclude = requests.data.get("exclude", [])
     like = requests.data.get("like", [])
+    dish_list = []
+
+    if not like:
+        return JsonResponse({"dishes": dish_list})
 
     good_ingredients = Ingredients().get_keys_by_id(like)
+    bad_ingredients = Ingredients().get_keys_by_id(exclude)
 
     dish = get_dish_by_ingredients(good_ingredients)
 
-    dish_list = []
     for _ in dish:
+        if is_bad_ingredient_in_dish(_, bad_ingredients):
+            continue
+        _["missingIngredients"] = len(set(ingredients_list(_)).difference(set(good_ingredients)))
         dish_list.append(__response(_))
 
     return JsonResponse({"dishes": dish_list})
@@ -50,6 +57,24 @@ def get_dish_by_ingredients(ingredients):
     return query.json() if query else []
 
 
+def ingredients_list(dish):
+    return [_.get("name", None) for _ in dish.get("ingredients", [])]
+
+
+def is_bad_ingredient_in_dish(dish, bag_ingredients):
+    """
+
+    :param dish:
+    :param bag_ingredients:
+    :return:
+    """
+    for _ in ingredients_list(dish):
+        if _ in bag_ingredients:
+            return True
+
+    return False
+
+
 def __response(dish):
     """
 
@@ -61,6 +86,6 @@ def __response(dish):
         "url": dish.get("url", None),
         "timeCooking": dish.get("cookingTime", None),   # время приготовления
         "energyValue": dish.get("energyValue", {}),   # информация о коллорийности
-        "missingIngredients": random.choice([1, 2, 4, 3, 0, 0, 0, 5]),   # количество нехватающих ингридиентов (пока рандом)
+        "missingIngredients": dish.get("missingIngredients", None),  # количество нехватающих ингридиентов (пока рандом)
         "img": dish.get("thumb", None)   # фотка не всегда есть
     }
