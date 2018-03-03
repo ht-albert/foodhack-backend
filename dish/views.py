@@ -20,15 +20,15 @@ def get_list(requests):
     exclude = requests.data.get("exclude", [])
     like = requests.data.get("like", [])
 
-    ingredients = Ingredients().get_keys_by_id(like)
+    good_ingredients = Ingredients().get_keys_by_id(like)
 
-    dish = get_dish_by_ingredients(ingredients)
+    dish = get_dish_by_ingredients(good_ingredients)
 
     dish_list = []
     for _ in dish:
         dish_list.append(__response(_))
 
-    return JsonResponse({"dish": dish_list})
+    return JsonResponse({"dishes": dish_list})
 
 
 def get_dish_by_ingredients(ingredients):
@@ -59,8 +59,8 @@ def __response(dish):
     return {
         "name": dish.get("name", None),
         "url": dish.get("url", None),
-        "timeCooking": dish.get("cookingTime", None),
-        "energyValue": dish.get("energyValue", {}),
-        "missingIngredients": random.choice([1, 2, 4, 3, 0, 0, 0, 5]),
-        "img": dish.get("thumb", None)
+        "timeCooking": dish.get("cookingTime", None),   # время приготовления
+        "energyValue": dish.get("energyValue", {}),   # информация о коллорийности
+        "missingIngredients": random.choice([1, 2, 4, 3, 0, 0, 0, 5]),   # количество нехватающих ингридиентов (пока рандом)
+        "img": dish.get("thumb", None)   # фотка не всегда есть
     }
