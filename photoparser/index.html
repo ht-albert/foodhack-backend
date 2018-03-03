@@ -1,0 +1,63 @@
+<button onclick='save()'>Save</button>
+<div id="main">
+    <div v-for="(item, itemIndex) in items" class="field" :data-index="itemIndex">
+        <h2>{{ item.name }}</h2>
+        Select index:<input type="number" v-model="item.cur" :value="item.cur"><br>
+        <img v-for="(image, index) in item.urls" :src="image" :data-index="index" style="width: 250px;">
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://ru.vuejs.org/js/vue.js"></script>
+<script>
+function downloadFile(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+function loadJSON(url, callback) {   
+
+    var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType("application/json");
+    xobj.open('GET', url, true); // Replace 'my_data' with the path to your file
+    xobj.onreadystatechange = function () {
+          if (xobj.readyState == 4) {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            let data = xobj.responseText;
+            try {
+                data = JSON.parse(data);
+            }
+            catch (e) {
+                /* It's not JSON */
+            }
+            callback(data, xobj.status);
+          }
+    };
+    xobj.send(null);  
+ }
+ 
+ loadJSON('updatedIngredientsMulti.json', function (items) {
+    window.vue = new Vue({
+      el: '#main',
+      data: { items }
+    });
+    window.items = items;
+    $('.field img').click(function () {
+        let $elem = $(this);
+        let imgIndex = $elem.attr('data-index');
+        let itemIndex = $elem.parents('.field').attr('data-index');
+        
+        vue.$set(vue.items[itemIndex], 'cur', imgIndex);
+    });
+ });
+function save() {
+    let text = JSON.stringify(window.vue.$data.items);
+    downloadFile('updatedIngredientsMulti.json', text);
+}
+</script>
