@@ -37,3 +37,18 @@ class Ingredients(models.Model):
             list_ingredients.append(_.__response())
 
         return list_ingredients
+
+    @staticmethod
+    def get_keys_by_id(ids):
+        """
+
+        :param ids:
+        :return:
+        """
+        ingredients = Ingredients.objects.filter(id__in=ids).values_list("key")
+
+        list_ingredients = []
+        for _ in ingredients:
+            list_ingredients.append(_[0])
+
+        return list_ingredients

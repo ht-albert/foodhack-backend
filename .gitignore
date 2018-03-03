@@ -3,3 +3,4 @@ foodhack/__pycache__/
 .idea/
 ingredients/migrations/
 ingredients/__pycache__/
+dish/migrations/
