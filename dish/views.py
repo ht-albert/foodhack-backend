@@ -30,12 +30,13 @@ def get_list(requests):
     dish = get_dish_by_ingredients(good_ingredients)
 
     for _ in dish:
-        if is_bad_ingredient_in_dish(_, bad_ingredients):
+        if is_bad_ingredient_in_dish(_, bad_ingredients) or not _.get("thumb", None):
             continue
         _["missingIngredients"] = len(set(ingredients_list(_)).difference(set(good_ingredients)))
         dish_list.append(__response(_))
 
-    return JsonResponse({"dishes": dish_list})
+    # Возвращем блюда в порядке возрастания недостающих ингредиетов
+    return JsonResponse({"dishes": sorted(dish_list, key=lambda missing: missing['missingIngredients'])})
 
 
 def get_dish_by_ingredients(ingredients):
