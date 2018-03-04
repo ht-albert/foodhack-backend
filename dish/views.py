@@ -32,11 +32,11 @@ def get_list(requests):
     for _ in dish:
         if is_bad_ingredient_in_dish(_, bad_ingredients) or not _.get("thumb", None):
             continue
-        _["missingIngredients"] = len(set(ingredients_list(_)).difference(set(good_ingredients)))
-        dish_list.append(__response(_))
+
+        dish_list.append(__response(_, len(set(ingredients_list(_)).difference(set(good_ingredients)))))
 
     # Возвращем блюда в порядке возрастания недостающих ингредиетов
-    return JsonResponse({"dishes": dish_list})
+    return JsonResponse({"dishes": sorted(dish_list, key=lambda missing: missing['missingIngredients'])})
 
 
 def get_dish_by_ingredients(ingredients):
@@ -59,7 +59,11 @@ def get_dish_by_ingredients(ingredients):
 
 
 def ingredients_list(dish):
-    return [_.get("name", None) for _ in dish.get("ingredients", [])]
+    list_ = []
+    for _ in dish.get("ingredients", []):
+        list_.append(_.get("name", None))
+
+    return list_
 
 
 def is_bad_ingredient_in_dish(dish, bag_ingredients):
@@ -76,7 +80,7 @@ def is_bad_ingredient_in_dish(dish, bag_ingredients):
     return False
 
 
-def __response(dish):
+def __response(dish, missing):
     """
 
     :param dish:
@@ -87,6 +91,6 @@ def __response(dish):
         "url": dish.get("url", None),
         "timeCooking": dish.get("cookingTime", None),   # время приготовления
         "energyValue": dish.get("energyValue", {}),   # информация о коллорийности
-        "missingIngredients": dish.get("missingIngredients", None),  # количество нехватающих ингридиентов (пока рандом)
+        "missingIngredients": missing,  # количество нехватающих ингридиентов (пока рандом)
         "img": dish.get("thumb", None)   # фотка не всегда есть
     }
