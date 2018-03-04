@@ -36,7 +36,7 @@ def get_list(requests):
         dish_list.append(__response(_))
 
     # Возвращем блюда в порядке возрастания недостающих ингредиетов
-    return JsonResponse({"dishes": dish_list)
+    return JsonResponse({"dishes": dish_list})
 
 
 def get_dish_by_ingredients(ingredients):
