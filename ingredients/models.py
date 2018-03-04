@@ -8,7 +8,7 @@ class Ingredients(models.Model):
 
     key = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
-    img = models.CharField(max_length=200)
+    img = models.CharField(max_length=500)
 
     def __response(self):
         """
@@ -18,7 +18,8 @@ class Ingredients(models.Model):
         return {
             "id": self.id,
             "key": self.key,
-            "name": self.name
+            "name": self.name,
+            "img": self.img,
         }
 
     @staticmethod
