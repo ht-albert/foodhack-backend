@@ -42,7 +42,7 @@ class Ingredients(models.Model):
     @staticmethod
     def get_keys_by_id(ids):
         """
-
+        Вернет список ингридиентов по id
         :param ids:
         :return:
         """
@@ -53,3 +53,19 @@ class Ingredients(models.Model):
             list_ingredients.append(_[0])
 
         return list_ingredients
+
+    @staticmethod
+    def get_ingredients_by_keys(keys):
+        """
+        Вернет список ингридиентов по ключам
+        :param keys:
+        :return:
+        """
+
+        ingredients = Ingredients.objects.filter(key__in=keys)
+
+        list_ = []
+        for _ in ingredients:
+            list_.append(_.__response())
+
+        return list_

@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 
-import random
 import requests
 from foodhack.helpers import RequestDict
 from ingredients.models import Ingredients
@@ -11,7 +10,7 @@ URL_SEARCH = "https://mnevkusno.ru/searchbyingredients"
 
 def get_list(requests):
     """
-
+    Получает список блюд
     :param requests:
     :return:
     """
@@ -41,7 +40,7 @@ def get_list(requests):
 
 def get_dish_by_ingredients(ingredients):
     """
-
+    Выполняет запрос на получение списка блюд по переданным ингридиентам
     :param ingredients:
     :return:
     """
@@ -53,12 +52,17 @@ def get_dish_by_ingredients(ingredients):
     try:
         query = requests.post(url=URL_SEARCH, data=data)
     except:
-         query = None
+        query = None
 
     return query.json() if query else []
 
 
 def ingredients_list(dish):
+    """
+    Возвращает список ключей ингридиентов, которые входят в состав блюда
+    :param dish:
+    :return:
+    """
     list_ = []
     for _ in dish.get("ingredients", []):
         list_.append(_.get("name", None))
@@ -68,7 +72,7 @@ def ingredients_list(dish):
 
 def is_bad_ingredient_in_dish(dish, bag_ingredients):
     """
-
+    Проверяет входят ли ингредиенты блюда в список запрещенных
     :param dish:
     :param bag_ingredients:
     :return:
@@ -82,15 +86,18 @@ def is_bad_ingredient_in_dish(dish, bag_ingredients):
 
 def __response(dish, missing):
     """
-
+    Формат возвращаемых данных
     :param dish:
     :return:
     """
+
     return {
         "name": dish.get("name", None),
         "url": dish.get("url", None),
         "timeCooking": dish.get("cookingTime", None),   # время приготовления
         "energyValue": dish.get("energyValue", {}),   # информация о коллорийности
-        "missingIngredients": missing,  # количество нехватающих ингридиентов (пока рандом)
-        "img": dish.get("thumb", None)   # фотка не всегда есть
+        "missingIngredients": missing,  # количество нехватающих ингридиентов
+        "img": dish.get("thumb", None),
+        "steps": dish.get("cookingSteps", {}),
+        "ingredients": Ingredients().get_ingredients_by_keys(ingredients_list(dish))
     }
