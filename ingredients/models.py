@@ -8,7 +8,7 @@ class Ingredients(models.Model):
 
     key = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
-    img = models.CharField(max_length=500)
+    img = models.CharField(max_length=1000)
 
     def __response(self):
         """
